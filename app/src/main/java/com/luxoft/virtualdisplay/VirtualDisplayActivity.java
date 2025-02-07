@@ -15,6 +15,7 @@ import android.os.Build;
 import android.os.Bundle;
 import android.os.IBinder;
 import android.view.Display;
+import android.view.Gravity;
 import android.view.SurfaceView;
 import android.view.View;
 import android.view.ViewGroup;
@@ -55,7 +56,7 @@ public class VirtualDisplayActivity extends Activity {
         createDisplayButton.setOnClickListener(v -> startProjectionService());
         layout.addView(createDisplayButton);
 
-        Button interactDisplayButton = new Button(this);
+       /* Button interactDisplayButton = new Button(this);
         interactDisplayButton.setText("Start Virtual Display");
         interactDisplayButton.setOnClickListener(v -> {
             if (virtualDisplay != null) {
@@ -66,7 +67,7 @@ public class VirtualDisplayActivity extends Activity {
                         Toast.LENGTH_SHORT).show();
             }
         });
-        layout.addView(interactDisplayButton);
+        layout.addView(interactDisplayButton);*/
 
         setContentView(layout);
 
@@ -90,7 +91,7 @@ public class VirtualDisplayActivity extends Activity {
             startService(serviceIntent);
         }
     }
-    private void handleVirtualDisplayInteraction() {
+  /*  private void handleVirtualDisplayInteraction() {
         // Example interaction - list virtual displays
         Display[] displays = displayManager.getDisplays();
         StringBuilder displayInfo = new StringBuilder();
@@ -102,7 +103,7 @@ public class VirtualDisplayActivity extends Activity {
         }
 
         Toast.makeText(this, displayInfo.toString(), Toast.LENGTH_SHORT).show();
-    }
+    }*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_MEDIA_PROJECTION && resultCode == RESULT_OK && projectionService != null) {
@@ -117,6 +118,7 @@ public class VirtualDisplayActivity extends Activity {
                 400, // width in pixels
                 300  // height in pixels
         );
+        params.gravity = Gravity.CENTER;
         surfaceView.setBackgroundColor(Color.BLUE);
         addContentView(surfaceView, params);
 

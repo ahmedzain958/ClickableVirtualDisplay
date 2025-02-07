@@ -28,7 +28,6 @@ public class VirtualDisplayActivity extends Activity {
     private MediaProjectionManager mediaProjectionManager;
     private MediaProjection mediaProjection;
     private VirtualDisplay virtualDisplay;
-    private DisplayManager displayManager;
     private ProjectionService projectionService;
     private ServiceConnection serviceConnection = new ServiceConnection() {
         @Override
@@ -56,22 +55,8 @@ public class VirtualDisplayActivity extends Activity {
         createDisplayButton.setOnClickListener(v -> startProjectionService());
         layout.addView(createDisplayButton);
 
-       /* Button interactDisplayButton = new Button(this);
-        interactDisplayButton.setText("Start Virtual Display");
-        interactDisplayButton.setOnClickListener(v -> {
-            if (virtualDisplay != null) {
-                handleVirtualDisplayInteraction();
-            } else {
-                Toast.makeText(VirtualDisplayActivity.this,
-                        "Create virtual display first",
-                        Toast.LENGTH_SHORT).show();
-            }
-        });
-        layout.addView(interactDisplayButton);*/
-
         setContentView(layout);
 
-        displayManager = (DisplayManager) getSystemService(Context.DISPLAY_SERVICE);
         mediaProjectionManager = (MediaProjectionManager) getSystemService(Context.MEDIA_PROJECTION_SERVICE);
     }
     private void requestMediaProjection() {
@@ -85,25 +70,9 @@ public class VirtualDisplayActivity extends Activity {
     private void startProjectionService() {
         Intent serviceIntent = new Intent(this, ProjectionService.class);
         bindService(serviceIntent, serviceConnection, Context.BIND_AUTO_CREATE);
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            startForegroundService(serviceIntent);
-        } else {
-            startService(serviceIntent);
-        }
+        startForegroundService(serviceIntent);
     }
-  /*  private void handleVirtualDisplayInteraction() {
-        // Example interaction - list virtual displays
-        Display[] displays = displayManager.getDisplays();
-        StringBuilder displayInfo = new StringBuilder();
 
-        for (Display display : displays) {
-            displayInfo.append("Display ID: ").append(display.getDisplayId())
-                    .append(", Name: ").append(display.getName())
-                    .append("\n");
-        }
-
-        Toast.makeText(this, displayInfo.toString(), Toast.LENGTH_SHORT).show();
-    }*/
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_MEDIA_PROJECTION && resultCode == RESULT_OK && projectionService != null) {
@@ -115,8 +84,8 @@ public class VirtualDisplayActivity extends Activity {
     private void createVirtualDisplay() {
         SurfaceView surfaceView = new SurfaceView(this);
         FrameLayout.LayoutParams params = new FrameLayout.LayoutParams(
-                400, // width in pixels
-                300  // height in pixels
+                400,
+                300
         );
         params.gravity = Gravity.CENTER;
         surfaceView.setBackgroundColor(Color.BLUE);
@@ -124,15 +93,14 @@ public class VirtualDisplayActivity extends Activity {
 
         virtualDisplay = mediaProjection.createVirtualDisplay(
                 "VirtualDisplay",
-                400, // match width
-                300, // match height
+                400,
+                300,
                 getResources().getDisplayMetrics().densityDpi,
                 DisplayManager.VIRTUAL_DISPLAY_FLAG_AUTO_MIRROR | DisplayManager.VIRTUAL_DISPLAY_FLAG_PUBLIC,
                 surfaceView.getHolder().getSurface(),
                 null,
                 null
         );
-
 
         surfaceView.setOnClickListener(new View.OnClickListener() {
             @Override

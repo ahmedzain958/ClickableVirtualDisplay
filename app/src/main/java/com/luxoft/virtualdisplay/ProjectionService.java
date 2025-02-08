@@ -1,8 +1,5 @@
 package com.luxoft.virtualdisplay;
 
-import static androidx.core.app.ServiceCompat.startForeground;
-import static androidx.core.content.ContextCompat.getSystemService;
-
 import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
@@ -14,7 +11,6 @@ import android.os.IBinder;
 
 import androidx.core.app.NotificationCompat;
 
-// ProjectionService.java
 public class ProjectionService extends Service {
     private final IBinder binder = new LocalBinder();
     private static final int NOTIFICATION_ID = 1;

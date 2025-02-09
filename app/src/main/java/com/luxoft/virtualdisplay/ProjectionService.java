@@ -17,7 +17,7 @@ public class ProjectionService extends Service {
     private static final String CHANNEL_ID = "VirtualDisplayChannel";
 
     public class LocalBinder extends Binder {
-        ProjectionService getService() {
+        public ProjectionService getService() {
             return ProjectionService.this;
         }
     }

@@ -1,6 +1,7 @@
 package com.luxoft.virtualdisplay.chatGptExample
 
 import android.app.Activity
+import android.app.ActivityOptions
 import android.app.Presentation
 import android.content.ComponentName
 import android.content.Context
@@ -8,16 +9,13 @@ import android.content.Intent
 import android.content.ServiceConnection
 import android.hardware.display.DisplayManager
 import android.hardware.display.VirtualDisplay
-import android.media.MediaRouter
 import android.media.projection.MediaProjection
 import android.media.projection.MediaProjectionManager
 import android.os.Bundle
 import android.os.IBinder
 import android.view.Display
 import android.view.LayoutInflater
-import android.view.Surface
 import android.view.SurfaceView
-import android.view.View
 import android.widget.Button
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
@@ -107,8 +105,33 @@ class ChatGptMainActivity : AppCompatActivity() {
         )
         virtualDisplay?.display?.let { display ->
             showSecondActivityOnVirtualDisplay(display)
+//            virtualDisplay?.let { startNavigationActivity(it) }
+
         }
     }
+
+
+    private fun startNavigationActivity(virtualDisplay: VirtualDisplay) {
+        try {
+            // Create the intent for the second activity
+            val intent = Intent()
+            val componentName = ComponentName(
+                "com.luxoft.virtualdisplay.chatGptExample",
+                "com.luxoft.virtualdisplay.chatGptExample.ChatGptSecondActivity"
+            )
+            intent.component = componentName
+
+            // Configure activity options to set the virtual display
+            val options = ActivityOptions.makeBasic()
+                .setLaunchDisplayId(virtualDisplay.display.displayId)
+
+            // Start the second activity
+            startActivity(intent, options.toBundle())
+        } catch (exception: Exception) {
+            exception.printStackTrace()
+        }
+    }
+
     private fun showSecondActivityOnVirtualDisplay(display: Display) {
         val presentation = ChatGptPresentation(this, display)
         presentation.show()
@@ -127,6 +150,12 @@ class ChatGptMainActivity : AppCompatActivity() {
             val view = inflater.inflate(R.layout.activity_chat_gpt_second, null)
             // Set the content view of the Presentation
             setContentView(view)
+            view.findViewById<Button>(R.id.btnClickMe).setOnClickListener {
+                Toast.makeText(
+                    context, "SurfaceView touched!",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
         }
     }
     override fun onDestroy() {
